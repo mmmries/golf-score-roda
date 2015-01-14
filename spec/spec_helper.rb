@@ -1,6 +1,7 @@
 ENV["RACK_ENV"] = "test"
 require_relative "../golfscore"
 require 'rack/test'
+require 'pry'
 
 RSpec.configure do |config|
   config.mock_with :rspec do |mocks|

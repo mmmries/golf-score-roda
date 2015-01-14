@@ -1,4 +1,4 @@
-describe Golfscore do
+describe "/awesomest_players.json" do
   include Rack::Test::Methods
 
   def app
