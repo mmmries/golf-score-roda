@@ -7,3 +7,5 @@ require "sequel"
 
 db_env = ENV["RACK_ENV"] || "development"
 DB = Sequel.sqlite("db/#{db_env}.sqlite3")
+
+require "./models/record_book"
