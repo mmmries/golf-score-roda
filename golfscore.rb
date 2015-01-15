@@ -3,8 +3,13 @@ require_relative "config/environment.rb"
 class Golfscore < Roda
   route do |r|
     r.is "awesomest_players.json" do
-      player = DB.fetch("SELECT * FROM players WHERE id = 1").first
-      JSON.generate([player])
+      attrs = [:id, :name, :points]
+      all_players = Directory.new(DB).all_players
+      all_players = all_players.sort_by{|p| p[:points]}.reverse.take(10).map do |player|
+        Hash[attrs.zip(player.values_at(*attrs))]
+      end
+
+      JSON.generate all_players
     end
 
     r.is "recent_games.json" do
