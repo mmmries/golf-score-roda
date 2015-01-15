@@ -13,6 +13,13 @@ class Directory
     end
   end
 
+  def player(id)
+    player = db.fetch("SELECT * FROM players WHERE id = ?", id).first
+    player[:points] = points_for_player_id(id)
+    player[:records] = all_records.select{|record| record[:player_id] == id}
+    player
+  end
+
   private
   attr_reader :db
 

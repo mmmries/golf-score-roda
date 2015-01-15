@@ -18,7 +18,7 @@ describe "/players/:id.json" do
     expect(player["records"]).to include({
       "place" => 1,
       "id" => 16,
-      "played_at" => "1345150740",
+      "played_at" => 1345172340,
       "course" => "ron jon",
       "course_id" => 1,
     })

@@ -15,7 +15,10 @@ class RecordBook
   def records_by_course_id
     @records_by_course_id ||= begin
       hole_attributes = (1..18).map{|i| ("hole%02d" % i).to_sym}
-      scores = db.fetch("SELECT s.*, g.course_id, g.played_at FROM scores AS s LEFT JOIN games AS g on g.id = s.game_id").to_a
+      scores = db.fetch("SELECT s.*, g.course_id, g.played_at, c.name AS course
+                         FROM scores AS s
+                         LEFT JOIN games AS g on g.id = s.game_id
+                         LEFT JOIN courses AS c on c.id = g.course_id").to_a
       scores.each do |score|
         score[:holes] = hole_attributes.map{|attr| score[attr]}.compact
         score[:total] = score[:holes].reduce(0, &:+)

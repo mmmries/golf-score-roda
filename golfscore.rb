@@ -24,5 +24,14 @@ class Golfscore < Roda
       end
       JSON.generate(recent_games)
     end
+
+    r.is "players/:id.json" do |player_id|
+      player = Directory.new(DB).player(player_id.to_i)
+      player[:records].map! do |r|
+        {:id => r[:id], :place => r[:place], :played_at => r[:played_at].to_i, :course => r[:course], :course_id => r[:course_id]}
+      end
+
+      JSON.generate(player)
+    end
   end
 end
