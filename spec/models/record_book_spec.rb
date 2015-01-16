@@ -16,5 +16,8 @@ describe RecordBook do
     expect(subject.all_records.size).to eq(5 * 7 - 1)
   end
 
-  it "excludes teams from records"
+  it "excludes teams from records" do
+    trafalga_gold = subject.records_by_course_id[8].first
+    expect(trafalga_gold[:player_id]).to eq 12
+  end
 end

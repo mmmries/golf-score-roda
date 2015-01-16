@@ -35,7 +35,7 @@ class Directory
         when 1; 10
         when 2; 5
         when 3; 3
-        else; 1
+        else 0
       end
     }
     scores + record_points.reduce(0, &:+)
