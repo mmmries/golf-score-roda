@@ -19,9 +19,8 @@ To build a new image run the following docker commands:
 
 ```
 docker build -t hqmq/golf:0.0.8 .
-docker push hqmq/golf:0.0.8
 docker tag hqmq/golf:0.0.8 hqmq/golf:latest
-docker push hqmq/golf:latest
+docker push hqmq/golf
 ```
 
 To run an image use the following docker command (you'll want to substitue the version tag at the end to be the latest version you created)
