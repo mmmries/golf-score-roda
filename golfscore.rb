@@ -12,6 +12,24 @@ class Golfscore < Roda
       JSON.generate all_players
     end
 
+    r.is "games/:id.json" do |id|
+      hole_attributes = (1..18).map{|i| ("hole%02d" % i).to_sym}
+      game = DB.fetch("SELECT g.*, c.name FROM games AS g LEFT JOIN courses AS c ON c.id = g.course_id WHERE g.id = ?", id).first
+      scores = DB.fetch("SELECT s.*, p.name FROM scores AS s LEFT JOIN players AS p ON p.id = s.player_id WHERE game_id = ?",id).map do |s|
+        holes = hole_attributes.map{|attr| s[attr]}.compact
+        {:id => s[:id], :player_id => s[:player_id], :name => s[:name], :holes => holes}
+      end
+      game = {
+        :id => game[:id],
+        :course_id => game[:course_id],
+        :course => game[:name],
+        :played_at => game[:played_at].to_i,
+        :scores => scores,
+      }
+
+      JSON.generate game
+    end
+
     r.is "recent_games.json" do
       recent_games = DB.fetch("SELECT g.*, c.name AS course_name FROM games AS g LEFT JOIN courses AS c ON c.id = g.course_id ORDER BY created_at DESC LIMIT 10").to_a
       recent_games.map! do |row|
