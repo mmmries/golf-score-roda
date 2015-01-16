@@ -15,4 +15,6 @@ describe RecordBook do
   it "returns 5 records per course (except 4 for Mulligan's Lighthouse)" do
     expect(subject.all_records.size).to eq(5 * 7 - 1)
   end
+
+  it "excludes teams from records"
 end
