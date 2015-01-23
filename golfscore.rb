@@ -51,5 +51,11 @@ class Golfscore < Roda
 
       JSON.generate(player)
     end
+
+    r.is "courses/:id.json" do |course_id|
+      course = Catalog.new(DB).find_by_id(course_id.to_i)
+
+      JSON.generate(course)
+    end
   end
 end
