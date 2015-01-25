@@ -44,7 +44,7 @@ class Catalog
   end
 
   def records_by_id(course_id)
-    attrs = %i( place id total course course_id )
+    attrs = %i( place id total course course_id game_id player player_id )
     all_records = RecordBook.new(db).records_by_course_id
     all_records[course_id].map do |record|
       Hash[attrs.zip(record.values_at(*attrs))].merge(:played_at => record[:played_at].to_i)

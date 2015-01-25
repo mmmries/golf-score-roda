@@ -15,15 +15,17 @@ describe "/courses/:id.json" do
     expect(course["name"]).to eq "trafalga"
     expect(course["par"]).to eq [3,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3]
     expect(course["number_of_games_played"]).to eq 9
+
     expect(course["records"].size).to eq 5
-    expect(course["records"].first).to eq({
-      "place" => 1,
-      "id" => 42,
-      "played_at" => 1346351940,
-      "total" => 37,
-      "course" => "trafalga",
-      "course_id" => 2,
-    })
+    top_record = course["records"].first
+    expect(top_record["place"]).to eq 1
+    expect(top_record["id"]).to eq 42
+    expect(top_record["played_at"]).to eq 1346351940
+    expect(top_record["total"]).to eq 37
+    expect(top_record["game_id"]).to eq 10
+    expect(top_record["player"]).to eq "mattd"
+    expect(top_record["player_id"]).to eq 4
+
     expect(course["recent_games"].size).to eq 9
     expect(course["recent_games"]).to include({
       "id" => 10,
