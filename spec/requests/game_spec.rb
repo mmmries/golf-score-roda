@@ -15,7 +15,7 @@ describe "/games/:id.json" do
       "id" => 1,
       "course_id" => 1,
       "course" => "ron jon",
-      "played_at" => 1345259700,
+      "played_at" => Time.parse('2012-08-17 21:15:00').to_i,
       "scores" => [
         {"id" => 1,"player_id" => 1,"holes" => [3,3,2,3,2,2,4,2,2],"name" => "Mikey"},
         {"id" => 2,"player_id" => 2,"holes" => [2,3,1,2,2,3,2,6,3],"name" => "jon"},

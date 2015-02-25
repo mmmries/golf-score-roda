@@ -17,7 +17,7 @@ describe "/recent_games.json" do
       "id" => 27,
       "course" => "Trafalga Orem Lighthouse",
       "course_id" => 8,
-      "played_at" => 1378497660,
+      "played_at" => Time.parse("2013-09-06 14:01:00").to_i,
     })
   end
 end

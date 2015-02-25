@@ -5,7 +5,7 @@ class Directory
 
   def all_players
     @all_players ||= begin
-      players = db.fetch("SELECT * FROM players").to_a
+      players = db[:players].to_a
       players.each do |player|
         player[:points] = points_for_player_id(player[:id])
       end
@@ -14,7 +14,7 @@ class Directory
   end
 
   def player(id)
-    player = db.fetch("SELECT * FROM players WHERE id = ?", id).first
+    player = db[:players].first(:id=>id)
     player[:points] = points_for_player_id(id)
     player[:records] = all_records.select{|record| record[:player_id] == id}
     player
@@ -43,9 +43,9 @@ class Directory
 
   def score_count_by_player_id
     @game_count_by_player_id ||= begin
-      counts = db.fetch("SELECT COUNT(*) AS cnt, player_id FROM scores GROUP BY player_id").to_a
+      counts = db[:scores].group_and_count(:player_id).to_a
       counts.inject({}) do |hash, row|
-        hash[row[:player_id]] = row[:cnt]
+        hash[row[:player_id]] = row[:count]
         hash
       end
     end

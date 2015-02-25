@@ -17,7 +17,7 @@ describe Directory do
     record = mikey[:records].first
     expect(record[:place]).to eq 1
     expect(record[:id]).to eq 16
-    expect(record[:played_at]).to eq ::Time.parse("2012-08-16 20:59:00-0600")
+    expect(record[:played_at]).to eq ::Time.parse("2012-08-16 20:59:00")
     expect(record[:course]).to eq "ron jon"
     expect(record[:course_id]).to eq 1
   end

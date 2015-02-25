@@ -20,7 +20,7 @@ describe "/courses/:id.json" do
     top_record = course["records"].first
     expect(top_record["place"]).to eq 1
     expect(top_record["id"]).to eq 42
-    expect(top_record["played_at"]).to eq 1346351940
+    expect(top_record["played_at"]).to eq Time.parse('2012-08-30 12:39:00').to_i
     expect(top_record["total"]).to eq 37
     expect(top_record["game_id"]).to eq 10
     expect(top_record["player"]).to eq "mattd"
@@ -29,7 +29,7 @@ describe "/courses/:id.json" do
     expect(course["recent_games"].size).to eq 9
     expect(course["recent_games"]).to include({
       "id" => 10,
-      "played_at" => 1346351940,
+      "played_at" => Time.parse('2012-08-30 12:39:00').to_i
     })
   end
 end
