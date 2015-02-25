@@ -1,15 +1,14 @@
 require_relative "config/environment.rb"
 
 class Golfscore < Roda
+  plugin :json
+
   route do |r|
     r.is "awesomest_players.json" do
       attrs = [:id, :name, :points]
-      all_players = Directory.new(DB).all_players
-      all_players = all_players.sort_by{|p| p[:points]}.reverse.take(10).map do |player|
+      Directory.new(DB).all_players.sort_by{|p| p[:points]}.reverse.take(10).map do |player|
         Hash[attrs.zip(player.values_at(*attrs))]
       end
-
-      JSON.generate all_players
     end
 
     r.is "games/:id.json" do |id|
@@ -19,15 +18,14 @@ class Golfscore < Roda
         holes = hole_attributes.map{|attr| s[attr]}.compact
         {:id => s[:id], :player_id => s[:player_id], :name => s[:name], :holes => holes}
       end
-      game = {
+
+      {
         :id => game[:id],
         :course_id => game[:course_id],
         :course => game[:name],
         :played_at => game[:played_at].to_i,
         :scores => scores,
       }
-
-      JSON.generate game
     end
 
     r.is "recent_games.json" do
@@ -40,7 +38,6 @@ class Golfscore < Roda
           :course => row[:course_name],
         }
       end
-      JSON.generate(recent_games)
     end
 
     r.is "players/:id.json" do |player_id|
@@ -49,13 +46,11 @@ class Golfscore < Roda
         {:id => r[:id], :place => r[:place], :played_at => r[:played_at].to_i, :course => r[:course], :course_id => r[:course_id]}
       end
 
-      JSON.generate(player)
+      player
     end
 
     r.is "courses/:id.json" do |course_id|
-      course = Catalog.new(DB).find_by_id(course_id.to_i)
-
-      JSON.generate(course)
+      Catalog.new(DB).find_by_id(course_id.to_i)
     end
   end
 end
