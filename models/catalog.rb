@@ -6,7 +6,7 @@ class Catalog
   end
 
   def find_by_id(course_id)
-    course = DB.fetch("SELECT * FROM courses WHERE id = ?", course_id).first
+    course = db[:courses].first(:id=>course_id)
     course["par"] = par_by_id(course_id)
     course["number_of_games_played"] = number_of_games_played_by_id(course_id)
     course["recent_games"] = recent_games_by_id(course_id)
@@ -17,17 +17,18 @@ class Catalog
   private
 
   def number_of_games_played_by_id(course_id)
-    db.fetch("SELECT COUNT(*) AS cnt FROM games WHERE course_id = ?",course_id).first[:cnt]
+    db[:games].where(:course_id=>course_id).count
   end
 
   def par_by_id(course_id)
     hole_attributes = (1..18).map{|i| ("hole%02d" % i).to_sym}
-    scores = db.fetch("SELECT s.*
-                       FROM scores AS s
-                       INNER JOIN games AS g ON g.id = s.game_id
-                       WHERE g.course_id = ?
-                         AND (g.teams = 'f' OR g.teams IS NULL)", course_id).to_a
-    scores.map!{|score| hole_attributes.map{|attr| score[attr]}.compact }
+    scores = db[:scores___s].
+      join(:games___g, :id=>:game_id).
+      where(:g__teams=>'f').
+      or(:g__teams=>nil).
+      where(:g__course_id=>course_id).
+      select_all(:s).
+      map{|score| hole_attributes.map{|attr| score[attr]}.compact }
     holes = scores.transpose
     par = holes.map do |hole_scores|
       sum = hole_scores.reduce(0.0){|sum, score| sum + score}
@@ -36,11 +37,11 @@ class Catalog
   end
 
   def recent_games_by_id(course_id)
-    games = db.fetch("SELECT *
-                     FROM games
-                     WHERE course_id = ?
-                     ORDER BY played_at DESC LIMIT 10", course_id).to_a
-    games.map{|g| {id: g[:id], played_at: g[:played_at].to_i} }
+    db[:games].
+      where(:course_id=>course_id).
+      reverse(:played_at).
+      limit(10).
+      map{|g| {id: g[:id], played_at: g[:played_at].to_i} }
   end
 
   def records_by_id(course_id)

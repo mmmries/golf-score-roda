@@ -13,8 +13,9 @@ class Golfscore < Roda
 
     r.is "games/:id.json" do |id|
       hole_attributes = (1..18).map{|i| ("hole%02d" % i).to_sym}
-      game = DB.fetch("SELECT g.*, c.name FROM games AS g LEFT JOIN courses AS c ON c.id = g.course_id WHERE g.id = ?", id).first
-      scores = DB.fetch("SELECT s.*, p.name FROM scores AS s LEFT JOIN players AS p ON p.id = s.player_id WHERE game_id = ?",id).map do |s|
+      ds = DB.dataset.select_all(:g).select_append(:c__name)
+      game = ds.from(:games___g).left_join(:courses___c, :id=>:course_id).first(:g__id=>id.to_i)
+      scores = ds.from(:scores___g).left_join(:players___c, :id=>:player_id).where(:game_id=>id.to_i).map do |s|
         holes = hole_attributes.map{|attr| s[attr]}.compact
         {:id => s[:id], :player_id => s[:player_id], :name => s[:name], :holes => holes}
       end
@@ -29,8 +30,7 @@ class Golfscore < Roda
     end
 
     r.is "recent_games.json" do
-      recent_games = DB.fetch("SELECT g.*, c.name AS course_name FROM games AS g LEFT JOIN courses AS c ON c.id = g.course_id ORDER BY created_at DESC LIMIT 10").to_a
-      recent_games.map! do |row|
+      DB[:games___g].left_join(:courses___c, :id=>:course_id).select_all(:g).select_append(:c__name___course_name).reverse(:created_at).limit(10).map do |row|
         {
           :id => row[:id],
           :course_id => row[:course_id],
